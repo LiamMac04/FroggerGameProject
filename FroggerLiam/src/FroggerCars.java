@@ -193,7 +193,9 @@ public class FroggerCars extends Sprite implements Runnable {
 	private void detectCollision() {
 		if ( this.r.intersects( this.playerFrog.getRectangle() ) ) {
 			System.out.println("Game Over");
-			this.moving = false;
+			
+			this.stopThread();
+			
 			this.froggerLogs.setMoving(false);
 			
 			

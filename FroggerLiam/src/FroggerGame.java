@@ -41,29 +41,49 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 			
 			playerFrog = new PlayerFrog();
 			
-			froggerCars = new FroggerCars[2];
-			froggerCarsLabel = new JLabel[2];
-			froggerCarsImage = new ImageIcon[2];
+			froggerCars = new FroggerCars[5];
+			froggerCarsLabel = new JLabel[5];
+			froggerCarsImage = new ImageIcon[5];
 					
 			froggerLogs = new FroggerLogs();
 			
-			for (int i = 0; i < 2; i++) {
+			for (int i = 0; i < 5; i++) {
 				froggerCars[i] = new FroggerCars();
 				//idea for truck if i!= 4 do 16 by 16 for all. split left and right maybe?
-				if (i == 0) {
+				
+				if (i == 0 || i == 2 || i == 4 ) {
 					froggerCars[i].setSpriteX(208);
-					froggerCars[i].setSpriteY(224);
-					froggerCars[i].setSpriteWidth(16);
-					froggerCars[i].setSpriteHeight(16);
-					froggerCars[i].setSpriteImage("FroggerCar1.png");
-					froggerCars[i].setLeft(true);
-				} else if ( i == 1 ) {
+				} else if (i == 1 || i == 3) {
 					froggerCars[i].setSpriteX(0);
-					froggerCars[i].setSpriteY(208);
+				}
+				
+				if (i < 5) {
 					froggerCars[i].setSpriteWidth(16);
 					froggerCars[i].setSpriteHeight(16);
-					froggerCars[i].setSpriteImage("FroggerCar2.png");
-					froggerCars[i].setLeft(false);
+					
+					if ( i == 0 ) {
+						froggerCars[i].setSpriteY(224);
+						froggerCars[i].setSpriteImage("FroggerCar1.png");
+						froggerCars[i].setLeft(true);
+					} else if ( i == 1 ) {
+						froggerCars[i].setSpriteY(208);
+						froggerCars[i].setSpriteImage("FroggerCar3.png");
+						froggerCars[i].setLeft(false);
+					} else if ( i == 2 ) {
+						froggerCars[i].setSpriteY(192);
+						froggerCars[i].setSpriteImage("FroggerCar2.png");
+						froggerCars[i].setLeft(true);
+					} else if ( i == 3 ) {
+						froggerCars[i].setSpriteY(176);
+						froggerCars[i].setSpriteImage("FroggerCar4.png");
+						froggerCars[i].setLeft(false);
+					}
+				} else if ( i == 5 ) {
+					froggerCars[i].setSpriteY(160);
+					froggerCars[i].setSpriteWidth(32);
+					froggerCars[i].setSpriteHeight(16);
+					froggerCars[i].setSpriteImage("FroggerTruck.png");
+					froggerCars[i].setLeft(true);
 				}
 				
 				froggerCarsLabel[i] = new JLabel();
@@ -128,7 +148,7 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 			fBLabel.setSize(fBackground.getSpriteWidth(), fBackground.getSpriteHeight());
 			fBLabel.setLocation(fBackground.getSpriteX(), fBackground.getSpriteY());
 			
-			for (int i = 0; i < 2; i++) {
+			for (int i = 0; i < 5; i++) {
 				//DO NOT SEND froggerCarsLabel INTO froggerCars WHEN ITS VALUE IS STILL NULL
 				froggerCars[i].setFroggerCarsLabel(froggerCarsLabel[i]);
 				//DO NOT SEND playerFrog INTO froggerCars WHEN ITS VALUE IS STILL NULL
@@ -170,7 +190,7 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 			//add actionListeners to the button
 			startButton.addActionListener(this);
 			
-			for (int i = 0; i < 2; i++) {
+			for (int i = 0; i < 5; i++) {
 				//send button into froggerCars
 				froggerCars[i].setStartButton(startButton);
 			}
@@ -182,7 +202,7 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 			content.add(playerFrogLabel);
 			
 			
-			for (int i = 0; i < 2; i++) {
+			for (int i = 0; i < 5; i++) {
 				content.add(froggerCarsLabel[i]);
 			}
 			
@@ -301,8 +321,9 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 			
 			if (e.getSource() == startButton) {
 				
-				if ( !froggerCars[0].getMoving() ) {
-					for (int i = 0; i < 2; i++) {
+				if ( !gameStarted ) {
+					
+					for (int i = 0; i < 5; i++) {
 						froggerCars[i].startThread();
 					}
 					
@@ -313,10 +334,7 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 					this.gameStarted = true;
 					startButton.setText("STOP");
 				} else {
-					for (int i = 0; i < 2; i++) {
-						froggerCars[i].stopThread();
-					}
-					
+					this.stopAll();
 					froggerLogs.stopThread();
 					this.gameStarted = false;
 					startButton.setText("RESTART");
@@ -326,6 +344,12 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 				System.out.println("Unknown command");
 			}
 			
+		}
+		
+		public void stopAll() {
+			for (int i = 0; i < 5; i++) {
+				froggerCars[i].stopThread();
+			}
 		}
 		
 }
