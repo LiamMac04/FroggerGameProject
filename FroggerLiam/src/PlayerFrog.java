@@ -2,11 +2,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
-public class PlayerFrog extends Sprite implements Runnable {
+public class PlayerFrog extends Sprite {
 	
-	private Boolean overWater;
+	private Boolean overWater, gameActive;
 	
-	private Thread t;
+	private Thread w, c;
 
 	//Link to Jlabel from GamePrep
 	private JLabel playerFrogLabel;
@@ -20,6 +20,43 @@ public class PlayerFrog extends Sprite implements Runnable {
 	private JLabel froggerCarsLabel;
 	private JLabel froggerLogsLabel;
 	
+	private boolean frogActive;
+	private boolean logLeft;
+	private int logSpeed;
+	private int logNum;
+	
+	public boolean isFrogActive() {
+		return frogActive;
+	}
+
+	public void setFrogActive(boolean frogActive) {
+		this.frogActive = frogActive;
+	}
+
+	public boolean isLogLeft() {
+		return logLeft;
+	}
+
+	public void setLogLeft(boolean logLeft) {
+		this.logLeft = logLeft;
+	}
+
+	public int getLogSpeed() {
+		return logSpeed;
+	}
+
+	public void setLogSpeed(int logSpeed) {
+		this.logSpeed = logSpeed;
+	}
+
+	public int getLogNum() {
+		return logNum;
+	}
+
+	public void setLogNum(int logNum) {
+		this.logNum = logNum;
+	}
+
 	public Boolean getOverWater() {
 		return overWater;
 	}
@@ -90,74 +127,16 @@ public class PlayerFrog extends Sprite implements Runnable {
 		super.display();
 	}
 	
-	public void startThread() {
-		if (!this.overWater) {
-			this.overWater = true;
-			t = new Thread(this, "FroggerCarsMovement");
-			t.start();
-			
-		}
-		
-	}
-	
-	public void stopThread() {
-		this.overWater = false;
-		System.out.println("Water Stop Test");
-	}
 
-	@Override
-	public void run() {
-		this.overWater = true;
-		System.out.println("Water Test");
-		
-		while (this.overWater) {
-			if ( detectLog() ) {
-				int x = this.getSpriteX();
-				
-				if ( !(x + this.getSpriteWidth() <= 16) ) {
-					x -= FGProperties.OBSTACLE_STEP;
-				}
-				
-				
-				this.setSpriteX(x);
-				this.setSpriteY(this.spriteY);
-				
-				//move character graphic
-				playerFrogLabel.setLocation(this.spriteX, this.spriteY);
-				
-				try {
-					Thread.sleep(100);
-				} catch(InterruptedException e) {
-					e.printStackTrace();
-				} catch (Exception e) {
-					e.printStackTrace();
-				} finally {
-					
-				}
-				
-			} else if ( !detectLog() ){
-				System.out.println("Game Over");
-				this.display();
-				this.froggerCars.setMoving(false);
-				this.froggerLogs.setMoving(false);
-				this.overWater = false;
-				
-				//make graphic for frog dead
-				this.setSpriteImage("FroggerLose.png");
-				this.playerFrogLabel.setIcon(
-						new ImageIcon(getClass().getResource("Sprites/FrogSprites/" + this.getSpriteImage()))
-				);
-			}
-		}
-		
-	}
 	
-	private boolean detectLog() {
+	
+	public boolean detectLog() {
 		if ( this.r.intersects( this.froggerLogs.getRectangle() ) ) {
 			return true;
 		} else {
 			return false;
 		}
+		
 	}
-
+	
 }
