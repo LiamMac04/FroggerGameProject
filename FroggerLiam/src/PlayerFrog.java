@@ -25,6 +25,17 @@ public class PlayerFrog extends Sprite {
 	private int logSpeed;
 	private int logNum;
 	
+	private int score = 0;
+
+	
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+
 	public boolean isFrogActive() {
 		return frogActive;
 	}
@@ -126,9 +137,6 @@ public class PlayerFrog extends Sprite {
 		//System.out.println("image: " + this.spriteImage );
 		super.display();
 	}
-	
-
-	
 	
 	public boolean detectLog() {
 		if ( this.r.intersects( this.froggerLogs.getRectangle() ) ) {
