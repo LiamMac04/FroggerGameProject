@@ -24,6 +24,7 @@ public class FroggerCars extends Sprite implements Runnable {
 	private JLabel playerFrogLabel;
 	
 	private int speed;
+	private int spacing;
 	
 	
 	//getters/setters
@@ -57,6 +58,14 @@ public class FroggerCars extends Sprite implements Runnable {
 
 	public void setSpeed(int speed) {
 		this.speed = speed;
+	}
+
+	public int getSpacing() {
+		return spacing;
+	}
+
+	public void setSpacing(int spacing) {
+		this.spacing = spacing;
 	}
 
 	public JLabel getFroggerCarsLabel() {
@@ -150,16 +159,16 @@ public class FroggerCars extends Sprite implements Runnable {
 				x -= FGProperties.OBSTACLE_STEP;
 			
 				if (!truck) {
-					if (x < 0 - 16) { x = FGProperties.SCREEN_WIDTH; }
+					if (x < -spacing) { x = FGProperties.SCREEN_WIDTH; }
 				} else {
-					if (x < 0 - 48) { x = FGProperties.SCREEN_WIDTH; }
+					if (x < -spacing) { x = FGProperties.SCREEN_WIDTH; }
 					
 				}
 				
 			} else if ( !left ) {
 				x += FGProperties.OBSTACLE_STEP;
 				
-				if (x > 224) {
+				if (x > 224 + spacing) {
 					x = 0;
 				}
 			}

@@ -11,6 +11,7 @@ public class FroggerLogs extends Sprite implements Runnable {
 	// Make boolean to determine direction
 	private Boolean left;
 	private int speed;
+	private int spacing;
 	
 	private Thread t;
 
@@ -47,6 +48,14 @@ public class FroggerLogs extends Sprite implements Runnable {
 
 	public void setSpeed(int speed) {
 		this.speed = speed;
+	}
+
+	public int getSpacing() {
+		return spacing;
+	}
+
+	public void setSpacing(int spacing) {
+		this.spacing = spacing;
 	}
 
 	public Boolean getHasFrog() {
@@ -176,23 +185,23 @@ public class FroggerLogs extends Sprite implements Runnable {
 			
 			if ( this.hasFrog) {
 				
-				int k = this.playerFrog.getSpriteX();
+				int x2 = this.playerFrog.getSpriteX();
 				
 				if ( this.left ) {
-					k -= FGProperties.OBSTACLE_STEP;
+					x2 -= FGProperties.OBSTACLE_STEP;
 					
-					if (k + 48 < 0) {
-						k = FGProperties.SCREEN_WIDTH;
+					if (x2 + 48 < 0) {
+						x2 = FGProperties.SCREEN_WIDTH;
 					}
 				} else if (!this.left ){
-					k += FGProperties.OBSTACLE_STEP;
+					x2 += FGProperties.OBSTACLE_STEP;
 					
-					if (k > 224) {
-						k = 0 - 48;
+					if (x2 > 224) {
+						x2 = 0 - 48;
 					}
 				}
 				
-				this.playerFrog.setSpriteX(k);
+				this.playerFrog.setSpriteX(x2);
 				this.playerFrog.setSpriteY(this.playerFrog.spriteY);
 				
 				//move character graphic

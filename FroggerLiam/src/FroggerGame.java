@@ -14,16 +14,16 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 	
 		//character variables
 	    private PlayerFrog playerFrog;
-	    private FroggerCars froggerCars[];
-	    private FroggerLogs froggerLogs[];
+	    private FroggerCars froggerCars[][];
+	    private FroggerLogs froggerLogs[][];
 	    
 	    private Sprite fBackground;
 	    
 		
 		//GUI variables
 		private Container content;
-		private JLabel playerFrogLabel, froggerCarsLabel[], froggerLogsLabel[];
-		private ImageIcon playerFrogImage, froggerCarsImage[], froggerLogsImage[];
+		private JLabel playerFrogLabel, froggerCarsLabel[][], froggerLogsLabel[][];
+		private ImageIcon playerFrogImage, froggerCarsImage[][], froggerLogsImage[][];
 		
 		private JLabel fBLabel;
 		private ImageIcon fBImage;
@@ -31,8 +31,10 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 		//start button
 		private JButton startButton;
 		
-		private int carStartPosition[];
-		private int logStartPosition[];
+		private int carStartPosition[][];
+		private int logStartPosition[][];
+		
+		private int carsInRow[];
 		
 		
 		
@@ -44,108 +46,136 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 			
 			playerFrog = new PlayerFrog();
 			
-			froggerCars = new FroggerCars[5];
-			froggerCarsLabel = new JLabel[5];
-			froggerCarsImage = new ImageIcon[5];
+			froggerCars = new FroggerCars[5][5];
+			froggerCarsLabel = new JLabel[5][5];
+			froggerCarsImage = new ImageIcon[5][5];
 					
-			froggerLogs = new FroggerLogs[5];
-			froggerLogsLabel = new JLabel[5];
-			froggerLogsImage = new ImageIcon[5];
+			froggerLogs = new FroggerLogs[5][5];
+			froggerLogsLabel = new JLabel[5][5];
+			froggerLogsImage = new ImageIcon[5][5];
 			
-			carStartPosition = new int[5];
-			logStartPosition = new int[5];
+			carStartPosition = new int[5][5];
+			logStartPosition = new int[5][5];
+			carsInRow = new int[5];
 			
 			for (int i = 0; i < 5; i++) {
-				froggerCars[i] = new FroggerCars();
-				//idea for truck if i!= 4 do 16 by 16 for all. split left and right maybe?
-				froggerLogs[i] = new FroggerLogs();
-				
-				if (i == 0 || i == 2 || i == 4 ) {
-					froggerCars[i].setSpriteX(208);
-					froggerLogs[i].setSpriteX(0);
-				} else if (i == 1 || i == 3) {
-					froggerCars[i].setSpriteX(0);
-					froggerLogs[i].setSpriteX(176);
+				if (i == 0) {
+					carsInRow[i] = 4;
+				} else if (i == 1) {
+					carsInRow[i] = 3;
+				} else if (i == 2) {
+					carsInRow[i] = 4;
+				} else if (i == 3) {
+					carsInRow[i] = 1;
+				} else if (i == 4) {
+					carsInRow[i] = 3;
 				}
 				
-				froggerLogs[i].setSpriteWidth(48);
-				froggerLogs[i].setSpriteHeight(16);
+				for (int j = 0; j < carsInRow[i]; j++) {
+					
+					froggerCars[i][j] = new FroggerCars();
+					
+					if (i == 0 || i == 2 || i == 4) {
+						froggerCars[i][j].setLeft(true);
+					} else if (i == 1 || i == 3) {
+						froggerCars[i][j].setLeft(false);
+					}
+					
+					froggerCars[i][j].setSpriteY(224 - (16 * i));
+					
+					if (i < 4) {
+						froggerCars[i][j].setSpriteWidth(16);
+						froggerCars[i][j].setSpriteHeight(16);
+						froggerCars[i][j].setTruck(false);
+						
+						if ( i == 0 ) {
+							froggerCars[i][j].setSpacing((16 + 64));
+							froggerCars[i][j].setSpriteX(208 - (j * froggerCars[i][j].getSpacing()));
+							froggerCars[i][j].setSpriteImage("FroggerCar1.png");
+							froggerCars[i][j].setSpeed(FGProperties.OBSTACLE_SPEED_NORMAL);
+						} else if ( i == 1 ) {
+							froggerCars[i][j].setSpacing((16 + 96));
+							froggerCars[i][j].setSpriteX(j * froggerCars[i][j].getSpacing());
+							froggerCars[i][j].setSpriteImage("FroggerCar3.png");
+							froggerCars[i][j].setSpeed(FGProperties.OBSTACLE_SPEED_FAST);
+						} else if ( i == 2 ) {
+							froggerCars[i][j].setSpacing((16 + 64));
+							froggerCars[i][j].setSpriteX(208 - (j * froggerCars[i][j].getSpacing()));
+							froggerCars[i][j].setSpriteImage("FroggerCar4.png");
+							froggerCars[i][j].setSpeed(FGProperties.OBSTACLE_SPEED_SLOW);
+						} else if ( i == 3 ) {
+							froggerCars[i][j].setSpacing(0);
+							froggerCars[i][j].setSpriteX(0);
+							froggerCars[i][j].setSpriteImage("FroggerCar2.png");
+							froggerCars[i][j].setSpeed(FGProperties.OBSTACLE_SPEED_FASTER);
+						}
+					} else if ( i == 4 ) {
+						froggerCars[i][j].setSpacing((48 + 48));
+						froggerCars[i][j].setSpriteX(224 - (j * froggerCars[i][j].getSpacing()));
+						froggerCars[i][j].setSpriteWidth(32);
+						froggerCars[i][j].setSpriteHeight(16);
+						froggerCars[i][j].setSpriteImage("FroggerTruck.png");
+						froggerCars[i][j].setTruck(true);
+						froggerCars[i][j].setSpeed(FGProperties.OBSTACLE_SPEED_NORMAL);
+					}
+					
+					froggerCarsLabel[i][j] = new JLabel();
+					froggerCarsImage[i][j] = new ImageIcon(getClass().getResource("Sprites/Cars/" + froggerCars[i][j].getSpriteImage()));
+					froggerCarsLabel[i][j].setIcon(froggerCarsImage[i][j]);
+					froggerCarsLabel[i][j].setSize(froggerCars[i][j].getSpriteWidth(), froggerCars[i][j].getSpriteHeight());
+					froggerCarsLabel[i][j].setLocation(froggerCars[i][j].getSpriteX(), froggerCars[i][j].getSpriteY());
+					
+					carStartPosition[i][j] = froggerCars[i][j].getSpriteX();
+					
+					
+				}
 				
-				if (i < 4) {
-					froggerCars[i].setSpriteWidth(16);
-					froggerCars[i].setSpriteHeight(16);
-					froggerCars[i].setTruck(false);
+				for (int j = 0; j < 3; j++) { //logs
+					
+					froggerLogs[i][j] = new FroggerLogs();
+					
+					froggerLogs[i][j].setSpacing((48 + 48));
+					
+					if (i == 0 || i == 2 || i == 4 ) {
+						froggerLogs[i][j].setSpriteX(0 + (j * froggerLogs[i][j].getSpacing()));	
+					} else if (i == 1 || i == 3) {
+						froggerLogs[i][j].setSpriteX(176 - (j * froggerLogs[i][j].getSpacing()));
+					}
+					
+					froggerLogs[i][j].setSpriteY(112 - (16 * i));
+					
+					froggerLogs[i][j].setSpriteWidth(48);
+					froggerLogs[i][j].setSpriteHeight(16);
+					
+					froggerLogs[i][j].setSpriteImage("FroggerLog3.png");
 					
 					if ( i == 0 ) {
-						froggerCars[i].setSpriteY(224);
-						froggerCars[i].setSpriteImage("FroggerCar1.png");
-						froggerCars[i].setLeft(true);
-						froggerCars[i].setSpeed(FGProperties.OBSTACLE_SPEED_NORMAL);
-						
-						froggerLogs[i].setSpriteY(112);
-						froggerLogs[i].setSpriteImage("FroggerLog3.png");
-						froggerLogs[i].setLeft(false);
-						froggerLogs[i].setSpeed(FGProperties.OBSTACLE_SPEED_SLOW);
+						froggerLogs[i][j].setLeft(false);
+						froggerLogs[i][j].setSpeed(FGProperties.OBSTACLE_SPEED_SLOW);
 					} else if ( i == 1 ) {
-						froggerCars[i].setSpriteY(208);
-						froggerCars[i].setSpriteImage("FroggerCar3.png");
-						froggerCars[i].setLeft(false);
-						froggerCars[i].setSpeed(FGProperties.OBSTACLE_SPEED_FAST);
-						
-						froggerLogs[i].setSpriteY(96);
-						froggerLogs[i].setSpriteImage("FroggerLog3.png");
-						froggerLogs[i].setLeft(true);
-						froggerLogs[i].setSpeed(FGProperties.OBSTACLE_SPEED_SLOW);
+						froggerLogs[i][j].setLeft(true);
+						froggerLogs[i][j].setSpeed(FGProperties.OBSTACLE_SPEED_SLOW);
 					} else if ( i == 2 ) {
-						froggerCars[i].setSpriteY(192);
-						froggerCars[i].setSpriteImage("FroggerCar4.png");
-						froggerCars[i].setLeft(true);
-						froggerCars[i].setSpeed(FGProperties.OBSTACLE_SPEED_SLOW);
-						
-						froggerLogs[i].setSpriteY(80);
-						froggerLogs[i].setSpriteImage("FroggerLog3.png");
-						froggerLogs[i].setLeft(false);
-						froggerLogs[i].setSpeed(FGProperties.OBSTACLE_SPEED_SLOW);
+						froggerLogs[i][j].setLeft(false);
+						froggerLogs[i][j].setSpeed(FGProperties.OBSTACLE_SPEED_SLOW);
 					} else if ( i == 3 ) {
-						froggerCars[i].setSpriteY(176);
-						froggerCars[i].setSpriteImage("FroggerCar2.png");
-						froggerCars[i].setLeft(false);
-						froggerCars[i].setSpeed(FGProperties.OBSTACLE_SPEED_FASTER);
-						
-						froggerLogs[i].setSpriteY(64);
-						froggerLogs[i].setSpriteImage("FroggerLog3.png");
-						froggerLogs[i].setLeft(true);
-						froggerLogs[i].setSpeed(FGProperties.OBSTACLE_SPEED_SLOW);
+						froggerLogs[i][j].setLeft(true);
+						froggerLogs[i][j].setSpeed(FGProperties.OBSTACLE_SPEED_NORMAL);
+					} else if ( i == 4 ) {
+						froggerLogs[i][j].setLeft(false);
+						froggerLogs[i][j].setSpeed(FGProperties.OBSTACLE_SPEED_SLOW);
 					}
-				} else if ( i == 4 ) {
-					froggerCars[i].setSpriteY(160);
-					froggerCars[i].setSpriteWidth(32);
-					froggerCars[i].setSpriteHeight(16);
-					froggerCars[i].setSpriteImage("FroggerTruck.png");
-					froggerCars[i].setLeft(true);
-					froggerCars[i].setTruck(true);
-					froggerCars[i].setSpeed(FGProperties.OBSTACLE_SPEED_NORMAL);
 					
-					froggerLogs[i].setSpriteY(48);
-					froggerLogs[i].setSpriteImage("FroggerLog3.png");
-					froggerLogs[i].setLeft(false);
-					froggerLogs[i].setSpeed(FGProperties.OBSTACLE_SPEED_SLOW);
+					froggerLogsLabel[i][j] = new JLabel();
+					froggerLogsImage[i][j] = new ImageIcon(getClass().getResource("Sprites/Logs/" + froggerLogs[i][j].getSpriteImage()));
+					froggerLogsLabel[i][j].setIcon(froggerLogsImage[i][j]);
+					froggerLogsLabel[i][j].setSize(froggerLogs[i][j].getSpriteWidth(), froggerLogs[i][j].getSpriteHeight());
+					froggerLogsLabel[i][j].setLocation(froggerLogs[i][j].getSpriteX(), froggerLogs[i][j].getSpriteY());
+					
+					logStartPosition[i][j] = froggerLogs[i][j].getSpriteX();
+					
 				}
 				
-				froggerCarsLabel[i] = new JLabel();
-				froggerCarsImage[i] = new ImageIcon(getClass().getResource("Sprites/Cars/" + froggerCars[i].getSpriteImage()));
-				froggerCarsLabel[i].setIcon(froggerCarsImage[i]);
-				froggerCarsLabel[i].setSize(froggerCars[i].getSpriteWidth(), froggerCars[i].getSpriteHeight());
-				froggerCarsLabel[i].setLocation(froggerCars[i].getSpriteX(), froggerCars[i].getSpriteY());
-				
-				froggerLogsLabel[i] = new JLabel();
-				froggerLogsImage[i] = new ImageIcon(getClass().getResource("Sprites/Logs/" + froggerLogs[i].getSpriteImage()));
-				froggerLogsLabel[i].setIcon(froggerLogsImage[i]);
-				froggerLogsLabel[i].setSize(froggerLogs[i].getSpriteWidth(), froggerLogs[i].getSpriteHeight());
-				froggerLogsLabel[i].setLocation(froggerLogs[i].getSpriteX(), froggerLogs[i].getSpriteY());
-				
-				carStartPosition[i] = froggerCars[i].getSpriteX();
-				logStartPosition[i] = froggerLogs[i].getSpriteX();
 				
 			}
 			
@@ -174,8 +204,6 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 			playerFrogLabel.setSize(playerFrog.getSpriteWidth(), playerFrog.getSpriteHeight());
 			playerFrogLabel.setLocation(playerFrog.getSpriteX(), playerFrog.getSpriteY());
 			
-			
-			
 			//fBackground DISPLAY
 			fBLabel = new JLabel();
 			fBImage = new ImageIcon(getClass().getResource("Sprites/Environment/" + fBackground.getSpriteImage()));
@@ -183,19 +211,26 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 			fBLabel.setSize(fBackground.getSpriteWidth(), fBackground.getSpriteHeight());
 			fBLabel.setLocation(fBackground.getSpriteX(), fBackground.getSpriteY());
 			
+			
 			for (int i = 0; i < 5; i++) {
-				//DO NOT SEND froggerCarsLabel INTO froggerCars WHEN ITS VALUE IS STILL NULL
-				froggerCars[i].setFroggerCarsLabel(froggerCarsLabel[i]);
-				froggerCars[i].setPlayerFrog(playerFrog);
-				froggerCars[i].setPlayerFrogLabel(playerFrogLabel);
-				playerFrog.setFroggerCars(froggerCars[i]);
-				playerFrog.setFroggerCarsLabel(froggerCarsLabel[i]);
 				
-				froggerLogs[i].setFroggerLogsLabel(froggerLogsLabel[i]);
-				froggerLogs[i].setPlayerFrog(playerFrog);
-				froggerLogs[i].setPlayerFrogLabel(playerFrogLabel);
-				playerFrog.setFroggerLogs(froggerLogs[i]);
-				playerFrog.setFroggerLogsLabel(froggerLogsLabel[i]);
+				for (int j = 0; j < carsInRow[i]; j++ ) {
+					froggerCars[i][j].setFroggerCarsLabel(froggerCarsLabel[i][j]);
+					froggerCars[i][j].setPlayerFrog(playerFrog);
+					froggerCars[i][j].setPlayerFrogLabel(playerFrogLabel);
+					
+					playerFrog.setFroggerCars(froggerCars[i][j]);
+					playerFrog.setFroggerCarsLabel(froggerCarsLabel[i][j]);
+				}
+				
+				for (int j = 0; j < 3; j++ ) {
+					froggerLogs[i][j].setFroggerLogsLabel(froggerLogsLabel[i][j]);
+					froggerLogs[i][j].setPlayerFrog(playerFrog);
+					froggerLogs[i][j].setPlayerFrogLabel(playerFrogLabel);
+					
+					playerFrog.setFroggerLogs(froggerLogs[i][j]);
+					playerFrog.setFroggerLogsLabel(froggerLogsLabel[i][j]);	
+				}
 	
 			}
 		
@@ -210,9 +245,13 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 			startButton.addActionListener(this);
 			
 			for (int i = 0; i < 5; i++) {
-				//send button into froggerCars
-				froggerCars[i].setStartButton(startButton);
-				froggerLogs[i].setStartButton(startButton);
+				for (int j = 0; j < carsInRow[i]; j++ ) {
+					froggerCars[i][j].setStartButton(startButton);
+				}
+				
+				for (int j = 0; j < 3; j++ ) {
+					froggerLogs[i][j].setStartButton(startButton);
+				}
 			}
 			
 			//populate screen
@@ -220,8 +259,13 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 			
 			
 			for (int i = 0; i < 5; i++) {
-				content.add(froggerCarsLabel[i]);
-				content.add(froggerLogsLabel[i]);
+				for (int j = 0; j < carsInRow[i]; j++ ) {
+					content.add(froggerCarsLabel[i][j]);
+				}
+				
+				for (int j = 0; j < 3; j++ ) {
+					content.add(froggerLogsLabel[i][j]);
+				}
 			}
 			
 			content.add(startButton);
@@ -317,48 +361,25 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 				
 				
 				if (!playerFrog.getOverWater() ) {
-					if (y <= 112) {
+					if (y <= 112 && y > 42) {
 						
 						playerFrog.setOverWater(true);
 						
 						Boolean onLog = false;
 						
-						if (froggerLogs[0].getRectangle().intersects(this.playerFrog.getRectangle())) {
-							onLog = true;
-							froggerLogs[0].setHasFrog(true);
-							froggerLogs[1].setHasFrog(false);
-							froggerLogs[2].setHasFrog(false);
-							froggerLogs[3].setHasFrog(false);
-							froggerLogs[4].setHasFrog(false);
-						} else if (froggerLogs[1].getRectangle().intersects(this.playerFrog.getRectangle())) {
-							onLog = true;
-							froggerLogs[0].setHasFrog(false);
-							froggerLogs[1].setHasFrog(true);
-							froggerLogs[2].setHasFrog(false);
-							froggerLogs[3].setHasFrog(false);
-							froggerLogs[4].setHasFrog(false);
-						} else if (froggerLogs[2].getRectangle().intersects(this.playerFrog.getRectangle())) {
-							onLog = true;
-							froggerLogs[0].setHasFrog(false);
-							froggerLogs[1].setHasFrog(false);
-							froggerLogs[2].setHasFrog(true);
-							froggerLogs[3].setHasFrog(false);
-							froggerLogs[4].setHasFrog(false);
-						} else if (froggerLogs[3].getRectangle().intersects(this.playerFrog.getRectangle())) {
-							onLog = true;
-							froggerLogs[0].setHasFrog(false);
-							froggerLogs[1].setHasFrog(false);
-							froggerLogs[2].setHasFrog(false);
-							froggerLogs[3].setHasFrog(true);
-							froggerLogs[4].setHasFrog(false);
-						} else if (froggerLogs[4].getRectangle().intersects(this.playerFrog.getRectangle())) {
-							onLog = true;
-							froggerLogs[0].setHasFrog(false);
-							froggerLogs[1].setHasFrog(false);
-							froggerLogs[2].setHasFrog(false);
-							froggerLogs[3].setHasFrog(false);
-							froggerLogs[4].setHasFrog(true);
-						} else {
+						for (int i = 0; i < 5; i++) {
+							// have to redo the Log detection. see if you can put a for inside a if like if
+							for (int j = 0; j < 3; j++) {
+								if (froggerLogs[i][j].getRectangle().intersects(this.playerFrog.getRectangle())) {
+									onLog = true;
+									froggerLogs[i][j].setHasFrog(true);
+								} else {
+									froggerLogs[i][j].setHasFrog(false);
+								}
+							}
+						}
+						
+						if (onLog == false) {
 							System.out.println("Game Over");
 						
 						
@@ -371,58 +392,41 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 									new ImageIcon(getClass().getResource("Sprites/FrogSprites/" + playerFrog.getSpriteImage()))
 							);
 						}
+	
 						
 					}
 				} else if ( playerFrog.getOverWater() ) {
 					if (y > 112) {
 						playerFrog.setOverWater(false);
 						for (int i = 0; i < 5; i++) {
-							froggerLogs[i].setHasFrog(false);
+							for (int j = 0; j < 3; j++) {
+								froggerLogs[i][j].setHasFrog(false);
+							}
 						}
 					} else if (y < 48) {
 						playerFrog.setOverWater(false);
 						for (int i = 0; i < 5; i++) {
-							froggerLogs[i].setHasFrog(false);
+							for (int j = 0; j < 3; j++) {
+								froggerLogs[i][j].setHasFrog(false);
+							}
 						}
 					} else if (y <= 112) {
 						Boolean onLog = false;
 						
-						if (froggerLogs[0].getRectangle().intersects(this.playerFrog.getRectangle())) {
-							onLog = true;
-							froggerLogs[0].setHasFrog(true);
-							froggerLogs[1].setHasFrog(false);
-							froggerLogs[2].setHasFrog(false);
-							froggerLogs[3].setHasFrog(false);
-							froggerLogs[4].setHasFrog(false);
-						} else if (froggerLogs[1].getRectangle().intersects(this.playerFrog.getRectangle())) {
-							onLog = true;
-							froggerLogs[0].setHasFrog(false);
-							froggerLogs[1].setHasFrog(true);
-							froggerLogs[2].setHasFrog(false);
-							froggerLogs[3].setHasFrog(false);
-							froggerLogs[4].setHasFrog(false);
-						} else if (froggerLogs[2].getRectangle().intersects(this.playerFrog.getRectangle())) {
-							onLog = true;
-							froggerLogs[0].setHasFrog(false);
-							froggerLogs[1].setHasFrog(false);
-							froggerLogs[2].setHasFrog(true);
-							froggerLogs[3].setHasFrog(false);
-							froggerLogs[4].setHasFrog(false);
-						} else if (froggerLogs[3].getRectangle().intersects(this.playerFrog.getRectangle())) {
-							onLog = true;
-							froggerLogs[0].setHasFrog(false);
-							froggerLogs[1].setHasFrog(false);
-							froggerLogs[2].setHasFrog(false);
-							froggerLogs[3].setHasFrog(true);
-							froggerLogs[4].setHasFrog(false);
-						} else if (froggerLogs[4].getRectangle().intersects(this.playerFrog.getRectangle())) {
-							onLog = true;
-							froggerLogs[0].setHasFrog(false);
-							froggerLogs[1].setHasFrog(false);
-							froggerLogs[2].setHasFrog(false);
-							froggerLogs[3].setHasFrog(false);
-							froggerLogs[4].setHasFrog(true);
-						} else {
+						for (int i = 0; i < 5; i++) {
+							
+							for (int j = 0; j < 3; j++) {
+								if (froggerLogs[i][j].getRectangle().intersects(this.playerFrog.getRectangle())) {
+									onLog = true;
+									froggerLogs[i][j].setHasFrog(true);
+								} else {
+									froggerLogs[i][j].setHasFrog(false);
+								}
+							}
+							
+						}
+						
+						if (onLog == false) {
 							System.out.println("Game Over");
 						
 						
@@ -459,13 +463,20 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 					playerFrogLabel.setLocation(playerFrog.getSpriteX(), playerFrog.getSpriteY());
 					
 					for (int i = 0; i < 5; i++) {
-						froggerCars[i].setSpriteX(carStartPosition[i]);
-						froggerLogs[i].setSpriteX(logStartPosition[i]);
-						froggerLogsLabel[i].setLocation(froggerLogs[i].getSpriteX(), froggerLogs[i].getSpriteY());
-						froggerLogsLabel[i].setLocation(froggerLogs[i].getSpriteX(), froggerLogs[i].getSpriteY());
 						
-						froggerCars[i].startThread();
-						froggerLogs[i].startThread();
+						for (int j = 0; j < carsInRow[i]; j++ ) {
+							froggerCars[i][j].setSpriteX(carStartPosition[i][j]);
+							froggerCarsLabel[i][j].setLocation(froggerCars[i][j].getSpriteX(), froggerCars[i][j].getSpriteY());
+							
+							froggerCars[i][j].startThread();
+						}
+						
+						for (int j = 0; j < 3; j++ ) {
+							froggerLogs[i][j].setSpriteX(logStartPosition[i][j]);
+							froggerLogsLabel[i][j].setLocation(froggerLogs[i][j].getSpriteX(), froggerLogs[i][j].getSpriteY());
+							
+							froggerLogs[i][j].startThread();
+						}
 					}
 					
 					playerFrog.setSpriteX(112);
