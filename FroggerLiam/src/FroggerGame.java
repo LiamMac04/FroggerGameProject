@@ -14,7 +14,7 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 	
 		//character variables
 	    private PlayerFrog playerFrog;
-	    private FroggerCars froggerCars;
+	    private FroggerCars[] froggerCars;
 	    private FroggerLogs froggerLogs;
 	    
 	    private Sprite fBackground;
@@ -22,8 +22,8 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 		
 		//GUI variables
 		private Container content;
-		private JLabel playerFrogLabel, froggerCarsLabel, froggerLogsLabel;
-		private ImageIcon playerFrogImage, froggerCarsImage, froggerLogsImage;
+		private JLabel playerFrogLabel, froggerCarsLabel[], froggerLogsLabel;
+		private ImageIcon playerFrogImage, froggerCarsImage[], froggerLogsImage;
 		
 		private JLabel fBLabel;
 		private ImageIcon fBImage;
@@ -40,9 +40,36 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 			super("Frogger");
 			
 			playerFrog = new PlayerFrog();
-			froggerCars = new FroggerCars();
+			froggerCars[] = new FroggerCars();
+			froggerCars[1] = new FroggerCars();
 			froggerLogs = new FroggerLogs();
 			
+			for (int i = 0; i < 2; i++) {
+				
+				//idea for truck if i!= 4 do 16 by 16 for all. split left and right maybe?
+				if (i == 0) {
+					froggerCars[i].setSpriteX(208);
+					froggerCars[i].setSpriteY(224);
+					froggerCars[i].setSpriteWidth(16);
+					froggerCars[i].setSpriteHeight(16);
+					froggerCars[i].setSpriteImage("FroggerCar1.png");
+					froggerCars[i].setLeft(true);
+				} else if ( i == 1 ) {
+					froggerCars[i].setSpriteX(0);
+					froggerCars[i].setSpriteY(208);
+					froggerCars[i].setSpriteWidth(16);
+					froggerCars[i].setSpriteHeight(16);
+					froggerCars[i].setSpriteImage("FroggerCar2.png");
+					froggerCars[i].setLeft(false);
+				}
+				
+				froggerCarsLabel[i] = new JLabel();
+				froggerCarsImage[i] = new ImageIcon(getClass().getResource("Sprites/Cars/" + froggerCars[i].getSpriteImage()));
+				froggerCarsLabel[i].setIcon(froggerCarsImage[i]);
+				froggerCarsLabel[i].setSize(froggerCars[i].getSpriteWidth(), froggerCars[i].getSpriteHeight());
+				froggerCarsLabel[i].setLocation(froggerCars[i].getSpriteX(), froggerCars[i].getSpriteY());
+				
+			}
 			
 			fBackground = new Sprite(0, 0, 224, 288, "FroggerBackgroundFullNew.png");
 			
@@ -71,19 +98,10 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 			playerFrogLabel.setLocation(playerFrog.getSpriteX(), playerFrog.getSpriteY());
 			
 			//froggerCars GUI setup => STATE
-			froggerCars.setSpriteX(208);
-			froggerCars.setSpriteY(224);
-			froggerCars.setSpriteWidth(16);
-			froggerCars.setSpriteHeight(16);
-			froggerCars.setSpriteImage("FroggerCar1.png");
-			froggerCars.setLeft(true);
+			
 			
 			//froggerCars DISPLAY
-			froggerCarsLabel = new JLabel();
-			froggerCarsImage = new ImageIcon(getClass().getResource("Sprites/Cars/" + froggerCars.getSpriteImage()));
-			froggerCarsLabel.setIcon(froggerCarsImage);
-			froggerCarsLabel.setSize(froggerCars.getSpriteWidth(), froggerCars.getSpriteHeight());
-			froggerCarsLabel.setLocation(froggerCars.getSpriteX(), froggerCars.getSpriteY());
+			
 			
 			//froggerLogs GUI setup => STATE
 			froggerLogs.setSpriteX(176);
@@ -107,30 +125,39 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 			fBLabel.setSize(fBackground.getSpriteWidth(), fBackground.getSpriteHeight());
 			fBLabel.setLocation(fBackground.getSpriteX(), fBackground.getSpriteY());
 			
-			//DO NOT SEND froggerCarsLabel INTO froggerCars WHEN ITS VALUE IS STILL NULL
-			froggerCars.setFroggerCarsLabel(froggerCarsLabel);
-			//DO NOT SEND playerFrog INTO froggerCars WHEN ITS VALUE IS STILL NULL
-			froggerCars.setPlayerFrog(playerFrog);
-			//DO NOT SEND playerFroglabel INTO froggerCars WHEN ITS VALUE IS STILL NULL
-			froggerCars.setPlayerFrogLabel(playerFrogLabel);
-			froggerCars.setFroggerLogs(froggerLogs);
-			froggerCars.setFroggerLogsLabel(froggerLogsLabel);
+			for (int i = 0; i < 2; i++) {
+				//DO NOT SEND froggerCarsLabel INTO froggerCars WHEN ITS VALUE IS STILL NULL
+				froggerCars[i].setFroggerCarsLabel(froggerCarsLabel[i]);
+				//DO NOT SEND playerFrog INTO froggerCars WHEN ITS VALUE IS STILL NULL
+				froggerCars[i].setPlayerFrog(playerFrog);
+				//DO NOT SEND playerFroglabel INTO froggerCars WHEN ITS VALUE IS STILL NULL
+				froggerCars[i].setPlayerFrogLabel(playerFrogLabel);
+				froggerCars[i].setFroggerLogs(froggerLogs);
+				froggerCars[i].setFroggerLogsLabel(froggerLogsLabel);
+				
+				froggerLogs.setPlayerFrogLabel(playerFrogLabel);
+				froggerLogs.setFroggerCars(froggerCars[i]);
+				froggerLogs.setFroggerCarsLabel(froggerCarsLabel[i]);
+				playerFrog.setFroggerCars(froggerCars[i]);
+				//DO NOT SEND FroggerCarsLabel INTO playerFrog WHEN ITS VALUE IS STILL NULL
+				playerFrog.setFroggerCarsLabel(froggerCarsLabel[i]);
+				
+				//send button into froggerCars
+				froggerCars[i].setStartButton(startButton);
+			}
+			
 			
 			//DO NOT SEND froggerLogsLabel INTO froggerLogs WHEN ITS VALUE IS STILL NULL
 			froggerLogs.setFroggerLogsLabel(froggerLogsLabel);
 			//DO NOT SEND playerFrog INTO froggerLogs WHEN ITS VALUE IS STILL NULL
 			froggerLogs.setPlayerFrog(playerFrog);
 			//DO NOT SEND character1label INTO character2 WHEN ITS VALUE IS STILL NULL
-			froggerLogs.setPlayerFrogLabel(playerFrogLabel);
-			froggerLogs.setFroggerCars(froggerCars);
-			froggerLogs.setFroggerCarsLabel(froggerCarsLabel);
+			
 			
 			//DO NOT SEND playerFrogLabel INTO playerFrog WHEN ITS VALUE IS STILL NULL
 			playerFrog.setPlayerFrogLabel(playerFrogLabel);
 			//DO NOT SEND froggerCars INTO froggerLogs WHEN ITS VALUE IS STILL NULL
-			playerFrog.setFroggerCars(froggerCars);
-			//DO NOT SEND FroggerCarsLabel INTO playerFrog WHEN ITS VALUE IS STILL NULL
-			playerFrog.setFroggerCarsLabel(froggerCarsLabel);
+			
 			playerFrog.setFroggerLogs(froggerLogs);
 			playerFrog.setFroggerLogsLabel(froggerLogsLabel);
 			
@@ -142,15 +169,19 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 			//add actionListeners to the button
 			startButton.addActionListener(this);
 			
-			//send button into froggerCars
-			froggerCars.setStartButton(startButton);
+			
 			
 			//send button into froggerLogs
 			froggerLogs.setStartButton(startButton);
 			
 			//populate screen
 			content.add(playerFrogLabel);
-			content.add(froggerCarsLabel);
+			
+			
+			for (int i = 0; i < 2; i++) {
+				content.add(froggerCarsLabel[i]);
+			}
+			
 			content.add(froggerLogsLabel);
 			content.add(startButton);
 			content.add(fBLabel);
@@ -266,8 +297,11 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 			
 			if (e.getSource() == startButton) {
 				
-				if ( !froggerCars.getMoving() & !froggerLogs.getMoving() ) {
-					froggerCars.startThread();
+				if ( !froggerCars[0].getMoving() ) {
+					for (int i = 0; i < 2; i++) {
+						froggerCars[i].startThread();
+					}
+					
 					froggerLogs.startThread();
 					playerFrog.setSpriteX(112);
 					playerFrog.setSpriteY(256);
@@ -275,7 +309,10 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 					this.gameStarted = true;
 					startButton.setText("STOP");
 				} else {
-					froggerCars.stopThread();
+					for (int i = 0; i < 2; i++) {
+						froggerCars[i].stopThread();
+					}
+					
 					froggerLogs.stopThread();
 					this.gameStarted = false;
 					startButton.setText("RESTART");

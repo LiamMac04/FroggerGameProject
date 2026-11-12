@@ -1,7 +1,6 @@
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-//not for self, can probably clean up the car stuff here, that is leftover from when i was doing colision
 
 public class FroggerLogs extends Sprite implements Runnable {
 	
