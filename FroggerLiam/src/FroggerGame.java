@@ -14,7 +14,7 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 	
 		//character variables
 	    private PlayerFrog playerFrog;
-	    private FroggerCars[] froggerCars;
+	    private FroggerCars froggerCars[];
 	    private FroggerLogs froggerLogs;
 	    
 	    private Sprite fBackground;
@@ -40,12 +40,15 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 			super("Frogger");
 			
 			playerFrog = new PlayerFrog();
-			froggerCars[] = new FroggerCars();
-			froggerCars[1] = new FroggerCars();
+			
+			froggerCars = new FroggerCars[2];
+			froggerCarsLabel = new JLabel[2];
+			froggerCarsImage = new ImageIcon[2];
+					
 			froggerLogs = new FroggerLogs();
 			
 			for (int i = 0; i < 2; i++) {
-				
+				froggerCars[i] = new FroggerCars();
 				//idea for truck if i!= 4 do 16 by 16 for all. split left and right maybe?
 				if (i == 0) {
 					froggerCars[i].setSpriteX(208);
@@ -141,9 +144,7 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 				playerFrog.setFroggerCars(froggerCars[i]);
 				//DO NOT SEND FroggerCarsLabel INTO playerFrog WHEN ITS VALUE IS STILL NULL
 				playerFrog.setFroggerCarsLabel(froggerCarsLabel[i]);
-				
-				//send button into froggerCars
-				froggerCars[i].setStartButton(startButton);
+	
 			}
 			
 			
@@ -169,7 +170,10 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 			//add actionListeners to the button
 			startButton.addActionListener(this);
 			
-			
+			for (int i = 0; i < 2; i++) {
+				//send button into froggerCars
+				froggerCars[i].setStartButton(startButton);
+			}
 			
 			//send button into froggerLogs
 			froggerLogs.setStartButton(startButton);

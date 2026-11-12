@@ -150,14 +150,14 @@ public class FroggerCars extends Sprite implements Runnable {
 			if ( left ) {
 				x -= FGProperties.OBSTACLE_STEP;
 			
-				if (x < 0) {
-					x = FGProperties.SCREEN_WIDTH - 16;
+				if (x < 0 - 16) {
+					x = FGProperties.SCREEN_WIDTH;
 				}
 			} else if ( !left ) {
 				x += FGProperties.OBSTACLE_STEP;
 				
 				if (x > 224) {
-					x = FGProperties.SCREEN_WIDTH - 16;
+					x = 0;
 				}
 			}
 			
