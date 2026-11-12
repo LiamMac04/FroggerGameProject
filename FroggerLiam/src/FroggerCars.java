@@ -9,6 +9,7 @@ public class FroggerCars extends Sprite implements Runnable {
 	
 	// Make boolean to determine direction
 	private Boolean left;
+	private Boolean truck;
 	
 	private Thread t;
 
@@ -18,12 +19,11 @@ public class FroggerCars extends Sprite implements Runnable {
 	
 	//link to playerFrog and logs
 	private PlayerFrog playerFrog;
-	private FroggerLogs froggerLogs;
 	
 	//link to playerfrog and logs Label
 	private JLabel playerFrogLabel;
-	private JLabel froggerLogsLabel;
 	
+	private int speed;
 	
 	
 	//getters/setters
@@ -41,6 +41,22 @@ public class FroggerCars extends Sprite implements Runnable {
 
 	public void setLeft(Boolean left) {
 		this.left = left;
+	}
+
+	public Boolean getTruck() {
+		return truck;
+	}
+
+	public void setTruck(Boolean truck) {
+		this.truck = truck;
+	}
+
+	public int getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(int speed) {
+		this.speed = speed;
 	}
 
 	public JLabel getFroggerCarsLabel() {
@@ -77,23 +93,6 @@ public class FroggerCars extends Sprite implements Runnable {
 
 	public void setPlayerFrogLabel(JLabel playerFrogLabel) {
 		this.playerFrogLabel = playerFrogLabel;
-	}
-
-
-	public FroggerLogs getFroggerLogs() {
-		return froggerLogs;
-	}
-
-	public void setFroggerLogs(FroggerLogs froggerLogs) {
-		this.froggerLogs = froggerLogs;
-	}
-
-	public JLabel getFroggerLogsLabel() {
-		return froggerLogsLabel;
-	}
-
-	public void setFroggerLogsLabel(JLabel froggerLogsLabel) {
-		this.froggerLogsLabel = froggerLogsLabel;
 	}
 
 	//default constructor
@@ -139,7 +138,7 @@ public class FroggerCars extends Sprite implements Runnable {
 		);
 		
 		//start updating x, keep updating until something sets this.moving to false
-		while (this.moving) {
+		while (this.moving && playerFrog.isFrogActive()) {
 			//movement routine
 			
 			//get coordinates
@@ -150,14 +149,18 @@ public class FroggerCars extends Sprite implements Runnable {
 			if ( left ) {
 				x -= FGProperties.OBSTACLE_STEP;
 			
-				if (x < 0) {
-					x = FGProperties.SCREEN_WIDTH - 16;
+				if (!truck) {
+					if (x < 0 - 16) { x = FGProperties.SCREEN_WIDTH; }
+				} else {
+					if (x < 0 - 48) { x = FGProperties.SCREEN_WIDTH; }
+					
 				}
+				
 			} else if ( !left ) {
 				x += FGProperties.OBSTACLE_STEP;
 				
 				if (x > 224) {
-					x = FGProperties.SCREEN_WIDTH - 16;
+					x = 0;
 				}
 			}
 			
@@ -174,7 +177,7 @@ public class FroggerCars extends Sprite implements Runnable {
 			
 			//pause operations
 			try {
-				Thread.sleep(50);
+				Thread.sleep(speed);
 			} catch(InterruptedException e) {
 				e.printStackTrace();
 			} catch (Exception e) {
@@ -185,6 +188,9 @@ public class FroggerCars extends Sprite implements Runnable {
 				
 		}
 		
+		this.setMoving(false);
+		this.stopThread();
+		
 		startButton.setText("RESTART");
 			
 			
@@ -193,8 +199,9 @@ public class FroggerCars extends Sprite implements Runnable {
 	private void detectCollision() {
 		if ( this.r.intersects( this.playerFrog.getRectangle() ) ) {
 			System.out.println("Game Over");
-			this.moving = false;
-			this.froggerLogs.setMoving(false);
+			
+			
+			playerFrog.setFrogActive(false);
 			
 			
 			//make graphic for frog dead

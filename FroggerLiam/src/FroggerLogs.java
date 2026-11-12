@@ -1,12 +1,16 @@
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-//not for self, can probably clean up the car stuff here, that is leftover from when i was doing colision
 
 public class FroggerLogs extends Sprite implements Runnable {
 	
 	//2. new attributes
 	private Boolean moving;
+	private Boolean hasFrog;
+	
+	// Make boolean to determine direction
+	private Boolean left;
+	private int speed;
 	
 	private Thread t;
 
@@ -16,11 +20,9 @@ public class FroggerLogs extends Sprite implements Runnable {
 	
 	//link to playerFrog and cars
 	private PlayerFrog playerFrog;
-	private FroggerCars froggerCars;
 	
 	//link to playerfrog and Cars Label
 	private JLabel playerFrogLabel;
-	private JLabel froggerCarsLabel;
 	
 	//getters/setters
 	public Boolean getMoving() {
@@ -31,6 +33,30 @@ public class FroggerLogs extends Sprite implements Runnable {
 		this.moving = move;
 	}
 	
+	public Boolean getLeft() {
+		return left;
+	}
+
+	public void setLeft(Boolean left) {
+		this.left = left;
+	}
+
+	public int getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(int speed) {
+		this.speed = speed;
+	}
+
+	public Boolean getHasFrog() {
+		return hasFrog;
+	}
+
+	public void setHasFrog(Boolean hasFrog) {
+		this.hasFrog = hasFrog;
+	}
+
 	public JLabel getFroggerLogsLabel() {
 		return froggerLogsLabel;
 	}
@@ -68,26 +94,11 @@ public class FroggerLogs extends Sprite implements Runnable {
 	}
 
 
-	public FroggerCars getFroggerCars() {
-		return froggerCars;
-	}
-
-	public void setFroggerCars(FroggerCars froggerCars) {
-		this.froggerCars = froggerCars;
-	}
-
-	public JLabel getFroggerCarsLabel() {
-		return froggerCarsLabel;
-	}
-
-	public void setFroggerCarsLabel(JLabel froggerCarsLabel) {
-		this.froggerCarsLabel = froggerCarsLabel;
-	}
-
 	//default constructor
 	public FroggerLogs() {
 		super(176, 112, 48, 16, "FroggerLog3.png");
 		this.moving = false;
+		this.left = true;
 		//this.character2Label = new JLabel();
 		this.setFroggerLogsLabel(null);
 		this.startButton = null;
@@ -118,6 +129,7 @@ public class FroggerLogs extends Sprite implements Runnable {
 		//character 2 moving on screen
 		this.moving = true;
 		startButton.setText("STOP");
+		this.hasFrog = false;
 		
 		//make graphic for character2 original (could have been swapped with red version)
 		this.setSpriteImage("FroggerLog3.png");
@@ -132,18 +144,27 @@ public class FroggerLogs extends Sprite implements Runnable {
 		);
 		
 		//start updating x, keep updating until something sets this.moving to false
-		while (this.moving) {
+		while (this.moving && playerFrog.isFrogActive()) {
 			//movement routine
 			
 			//get coordinates
 			int x = this.spriteX;
 			int y = this.spriteY;
 			
-			//step to left (boundary loop)
-			x -= FGProperties.OBSTACLE_STEP;
 			
-			if (x + 48 < 0) {
-				x = FGProperties.SCREEN_WIDTH;
+			//Determine direction
+			if ( left ) {
+				x -= FGProperties.OBSTACLE_STEP;
+			
+				if (x + 48 < 0) {
+					x = FGProperties.SCREEN_WIDTH;
+				}
+			} else if ( !left ) {
+				x += FGProperties.OBSTACLE_STEP;
+				
+				if (x > 224) {
+					x = 0 - 48;
+				}
 			}
 			
 			//update Logs x and y
@@ -153,11 +174,34 @@ public class FroggerLogs extends Sprite implements Runnable {
 			//update the character2Label on the screen
 			froggerLogsLabel.setLocation(this.spriteX, this.spriteY);
 			
-			this.display();
+			if ( this.hasFrog) {
+				
+				int k = this.playerFrog.getSpriteX();
+				
+				if ( this.left ) {
+					k -= FGProperties.OBSTACLE_STEP;
+					
+					if (k + 48 < 0) {
+						k = FGProperties.SCREEN_WIDTH;
+					}
+				} else if (!this.left ){
+					k += FGProperties.OBSTACLE_STEP;
+					
+					if (k > 224) {
+						k = 0 - 48;
+					}
+				}
+				
+				this.playerFrog.setSpriteX(k);
+				this.playerFrog.setSpriteY(this.playerFrog.spriteY);
+				
+				//move character graphic
+				this.playerFrogLabel.setLocation(this.playerFrog.spriteX, this.playerFrog.spriteY);
+			}
 			
 			//pause operations
 			try {
-				Thread.sleep(100);
+				Thread.sleep(this.speed);
 			} catch(InterruptedException e) {
 				e.printStackTrace();
 			} catch (Exception e) {
@@ -167,6 +211,9 @@ public class FroggerLogs extends Sprite implements Runnable {
 			}
 				
 		}
+		
+		this.setMoving(false);
+		this.stopThread();
 		
 		startButton.setText("RESTART");
 			
