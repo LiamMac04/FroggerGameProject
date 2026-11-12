@@ -4,9 +4,9 @@ import javax.swing.JLabel;
 
 public class PlayerFrog extends Sprite implements Runnable {
 	
-	private Boolean overWater;
+	private Boolean overWater, gameActive;
 	
-	private Thread t;
+	private Thread w, c;
 
 	//Link to Jlabel from GamePrep
 	private JLabel playerFrogLabel;
@@ -20,6 +20,16 @@ public class PlayerFrog extends Sprite implements Runnable {
 	private JLabel froggerCarsLabel;
 	private JLabel froggerLogsLabel;
 	
+	private boolean frogActive;
+	
+	public boolean isFrogActive() {
+		return frogActive;
+	}
+
+	public void setFrogActive(boolean frogActive) {
+		this.frogActive = frogActive;
+	}
+
 	public Boolean getOverWater() {
 		return overWater;
 	}
@@ -90,20 +100,37 @@ public class PlayerFrog extends Sprite implements Runnable {
 		super.display();
 	}
 	
-	public void startThread() {
+	public void startWater() {
 		if (!this.overWater) {
 			this.overWater = true;
-			t = new Thread(this, "FroggerCarsMovement");
-			t.start();
+			w = new Thread(this, "FroggerWaterCheck");
+			w.start();
 			
 		}
 		
 	}
 	
-	public void stopThread() {
+	public void stopWater() {
 		this.overWater = false;
 		System.out.println("Water Stop Test");
 	}
+	
+	public void startCar() {
+		if (!this.gameActive) {
+			this.gameActive = true;
+			c = new Thread(this, "FroggerCarCheck");
+			c.start();
+			
+		}
+		
+	}
+	
+	public void stopCar() {
+		this.gameActive = false;
+		System.out.println("Car Stop Test");
+	}
+	
+	
 
 	@Override
 	public void run() {
@@ -141,6 +168,7 @@ public class PlayerFrog extends Sprite implements Runnable {
 				this.froggerCars.setMoving(false);
 				this.froggerLogs.setMoving(false);
 				this.overWater = false;
+				this.frogActive = false;
 				
 				//make graphic for frog dead
 				this.setSpriteImage("FroggerLose.png");
@@ -159,5 +187,22 @@ public class PlayerFrog extends Sprite implements Runnable {
 			return false;
 		}
 	}
+	
+	//private void detectCar() {
+		//if ( this.r.intersects( this.froggerCars.getRectangle() ) ) {
+			//System.out.println("Game Over");
+			
+			//this.froggerCars.stopThread();
+			
+			//this.froggerLogs.setMoving(false);
+			
+			
+			//make graphic for frog dead
+			//this.setSpriteImage("FroggerLose.png");
+			//this.playerFrogLabel.setIcon(
+					//new ImageIcon(getClass().getResource("Sprites/FrogSprites/" + this.getSpriteImage()))
+			//);
+		//}
+	//}
 
 }
