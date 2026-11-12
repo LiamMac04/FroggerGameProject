@@ -10,6 +10,7 @@ public class FroggerCars extends Sprite implements Runnable {
 	// Make boolean to determine direction
 	private Boolean left;
 	private Boolean truck;
+	private int speed;
 	
 	private Thread t;
 
@@ -47,6 +48,14 @@ public class FroggerCars extends Sprite implements Runnable {
 
 	public void setTruck(Boolean truck) {
 		this.truck = truck;
+	}
+
+	public int getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(int speed) {
+		this.speed = speed;
 	}
 
 	public JLabel getFroggerCarsLabel() {
@@ -90,6 +99,8 @@ public class FroggerCars extends Sprite implements Runnable {
 		super(208, 224, 16, 16, "FroggerCar1.png");
 		this.moving = false;
 		this.left = true;
+		this.truck = false;
+		this.speed = FGProperties.OBSTACLE_SPEED_NORMAL;
 		//this.character2Label = new JLabel();
 		this.setFroggerCarsLabel(null);
 		this.startButton = null;
@@ -128,7 +139,7 @@ public class FroggerCars extends Sprite implements Runnable {
 		);
 		
 		//start updating x, keep updating until something sets this.moving to false
-		while (this.moving & playerFrog.isFrogActive()) {
+		while (this.moving & !playerFrog.isFrogActive() ) { //added a ! to test logs easier DONT FORGET TO REMOVE
 			//movement routine
 			
 			//get coordinates
@@ -167,7 +178,7 @@ public class FroggerCars extends Sprite implements Runnable {
 			
 			//pause operations
 			try {
-				Thread.sleep(50);
+				Thread.sleep(speed);
 			} catch(InterruptedException e) {
 				e.printStackTrace();
 			} catch (Exception e) {
@@ -204,3 +215,5 @@ public class FroggerCars extends Sprite implements Runnable {
 
 		
 }
+
+

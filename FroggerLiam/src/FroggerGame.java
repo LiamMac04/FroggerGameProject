@@ -62,10 +62,10 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 				
 				if (i == 0 || i == 2 || i == 4 ) {
 					froggerCars[i].setSpriteX(208);
-					froggerLogs[i].setSpriteX(0);
+					froggerLogs[i].setSpriteX(-48);
 				} else if (i == 1 || i == 3) {
 					froggerCars[i].setSpriteX(0);
-					froggerLogs[i].setSpriteX(176);
+					froggerLogs[i].setSpriteX(224);
 				}
 				
 				froggerLogs[i].setSpriteWidth(48);
@@ -80,34 +80,42 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 						froggerCars[i].setSpriteY(224);
 						froggerCars[i].setSpriteImage("FroggerCar1.png");
 						froggerCars[i].setLeft(true);
+						froggerCars[i].setSpeed(FGProperties.OBSTACLE_SPEED_NORMAL);
 						
 						froggerLogs[i].setSpriteY(112);
 						froggerLogs[i].setSpriteImage("FroggerLog3.png");
 						froggerLogs[i].setLeft(false);
+						froggerLogs[i].setSpeed(FGProperties.OBSTACLE_SPEED_SLOW);
 					} else if ( i == 1 ) {
 						froggerCars[i].setSpriteY(208);
 						froggerCars[i].setSpriteImage("FroggerCar3.png");
 						froggerCars[i].setLeft(false);
+						froggerCars[i].setSpeed(FGProperties.OBSTACLE_SPEED_FAST);
 						
 						froggerLogs[i].setSpriteY(96);
 						froggerLogs[i].setSpriteImage("FroggerLog3.png");
 						froggerLogs[i].setLeft(true);
+						froggerLogs[i].setSpeed(FGProperties.OBSTACLE_SPEED_SLOW);
 					} else if ( i == 2 ) {
 						froggerCars[i].setSpriteY(192);
-						froggerCars[i].setSpriteImage("FroggerCar2.png");
+						froggerCars[i].setSpriteImage("FroggerCar4.png");
 						froggerCars[i].setLeft(true);
+						froggerCars[i].setSpeed(FGProperties.OBSTACLE_SPEED_SLOW);
 						
 						froggerLogs[i].setSpriteY(80);
 						froggerLogs[i].setSpriteImage("FroggerLog3.png");
 						froggerLogs[i].setLeft(false);
+						froggerLogs[i].setSpeed(FGProperties.OBSTACLE_SPEED_SLOW);
 					} else if ( i == 3 ) {
 						froggerCars[i].setSpriteY(176);
-						froggerCars[i].setSpriteImage("FroggerCar4.png");
+						froggerCars[i].setSpriteImage("FroggerCar2.png");
 						froggerCars[i].setLeft(false);
+						froggerCars[i].setSpeed(FGProperties.OBSTACLE_SPEED_FASTER);
 						
 						froggerLogs[i].setSpriteY(64);
 						froggerLogs[i].setSpriteImage("FroggerLog3.png");
 						froggerLogs[i].setLeft(true);
+						froggerLogs[i].setSpeed(FGProperties.OBSTACLE_SPEED_SLOW);
 					}
 				} else if ( i == 4 ) {
 					froggerCars[i].setSpriteY(160);
@@ -116,10 +124,12 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 					froggerCars[i].setSpriteImage("FroggerTruck.png");
 					froggerCars[i].setLeft(true);
 					froggerCars[i].setTruck(true);
+					froggerCars[i].setSpeed(FGProperties.OBSTACLE_SPEED_NORMAL);
 					
 					froggerLogs[i].setSpriteY(48);
 					froggerLogs[i].setSpriteImage("FroggerLog3.png");
 					froggerLogs[i].setLeft(false);
+					froggerLogs[i].setSpeed(FGProperties.OBSTACLE_SPEED_SLOW);
 				}
 				
 				froggerCarsLabel[i] = new JLabel();
@@ -305,6 +315,13 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 				//move character graphic
 				playerFrogLabel.setLocation(playerFrog.getSpriteX(), playerFrog.getSpriteY());
 				
+				for (int i = 0; i <= 4; i++) {
+					if (playerFrog.getSpriteY() == froggerLogs[i].getSpriteY() ) {
+						playerFrog.setLogLeft(froggerLogs[i].getLeft());
+						playerFrog.setLogSpeed(froggerLogs[i].getSpeed());
+					}
+				}
+				
 				if (!playerFrog.getOverWater() ) {
 					if (y <= 112) {
 						playerFrog.startWater();
@@ -340,19 +357,12 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 					for (int i = 0; i < 5; i++) {
 						froggerCars[i].setSpriteX(carStartPosition[i]);
 						froggerLogs[i].setSpriteX(logStartPosition[i]);
-						froggerLogsLabel[i].setLocation(froggerLogs[i].getSpriteX(), froggerLogs[i].getSpriteY());
+						froggerCarsLabel[i].setLocation(froggerCars[i].getSpriteX(), froggerCars[i].getSpriteY());
 						froggerLogsLabel[i].setLocation(froggerLogs[i].getSpriteX(), froggerLogs[i].getSpriteY());
 						
 						froggerCars[i].startThread();
 						froggerLogs[i].startThread();
 					}
-					
-					playerFrog.setSpriteX(112);
-					playerFrog.setSpriteY(256);
-					
-					
-					
-					playerFrogLabel.setLocation(playerFrog.getSpriteX(), playerFrog.getSpriteY());
 					
 					startButton.setText("STOP");
 				} else {

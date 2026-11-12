@@ -22,6 +22,9 @@ public class PlayerFrog extends Sprite implements Runnable {
 	
 	private boolean frogActive;
 	
+	private boolean logLeft;
+	private int logSpeed;
+	
 	public boolean isFrogActive() {
 		return frogActive;
 	}
@@ -36,6 +39,22 @@ public class PlayerFrog extends Sprite implements Runnable {
 
 	public void setOverWater(Boolean overWater) {
 		this.overWater = overWater;
+	}
+
+	public boolean isLogLeft() {
+		return logLeft;
+	}
+
+	public void setLogLeft(boolean logLeft) {
+		this.logLeft = logLeft;
+	}
+
+	public int getLogSpeed() {
+		return logSpeed;
+	}
+
+	public void setLogSpeed(int logSpeed) {
+		this.logSpeed = logSpeed;
 	}
 
 	public JLabel getPlayerFrogLabel() {
@@ -97,6 +116,7 @@ public class PlayerFrog extends Sprite implements Runnable {
 		//System.out.println("x, y: " + this.spriteX + ", " + this.spriteY);
 		//System.out.println("w, h " + this.spriteWidth + ", " + this.spriteHeight);
 		//System.out.println("image: " + this.spriteImage );
+		System.out.println("FROG: ");
 		super.display();
 	}
 	
@@ -141,10 +161,20 @@ public class PlayerFrog extends Sprite implements Runnable {
 			if ( detectLog() ) {
 				int x = this.getSpriteX();
 				
+				//if (this.logLeft) {
+				//	if (!(x + this.getSpriteWidth() <= 16)) {
+				//		x -= FGProperties.OBSTACLE_STEP;
+				//	}
+				//} else if (!this.logLeft) {
+				//	if (!(x + this.getSpriteWidth() >= 16)) {
+				//		x += FGProperties.OBSTACLE_STEP;
+				//	}
+					
+				//}
+					
 				if ( !(x + this.getSpriteWidth() <= 16) ) {
 					x -= FGProperties.OBSTACLE_STEP;
 				}
-				
 				
 				this.setSpriteX(x);
 				this.setSpriteY(this.spriteY);
@@ -153,7 +183,7 @@ public class PlayerFrog extends Sprite implements Runnable {
 				playerFrogLabel.setLocation(this.spriteX, this.spriteY);
 				
 				try {
-					Thread.sleep(100);
+					Thread.sleep(this.logSpeed);
 				} catch(InterruptedException e) {
 					e.printStackTrace();
 				} catch (Exception e) {
@@ -163,12 +193,15 @@ public class PlayerFrog extends Sprite implements Runnable {
 				}
 				
 			} else if ( !detectLog() ){
-				System.out.println("Game Over");
+				System.out.println("Game Over by no log");
 				this.display();
-				this.froggerCars.setMoving(false);
-				this.froggerLogs.setMoving(false);
+				
 				this.overWater = false;
 				this.frogActive = false;
+				
+				froggerLogs.display();
+				
+				this.overWater = false;
 				
 				//make graphic for frog dead
 				this.setSpriteImage("FroggerLose.png");
@@ -188,21 +221,4 @@ public class PlayerFrog extends Sprite implements Runnable {
 		}
 	}
 	
-	//private void detectCar() {
-		//if ( this.r.intersects( this.froggerCars.getRectangle() ) ) {
-			//System.out.println("Game Over");
-			
-			//this.froggerCars.stopThread();
-			
-			//this.froggerLogs.setMoving(false);
-			
-			
-			//make graphic for frog dead
-			//this.setSpriteImage("FroggerLose.png");
-			//this.playerFrogLabel.setIcon(
-					//new ImageIcon(getClass().getResource("Sprites/FrogSprites/" + this.getSpriteImage()))
-			//);
-		//}
-	//}
-
 }

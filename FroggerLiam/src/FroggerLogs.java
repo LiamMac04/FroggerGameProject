@@ -9,6 +9,7 @@ public class FroggerLogs extends Sprite implements Runnable {
 	
 	// Make boolean to determine direction
 	private Boolean left;
+	private int speed;
 	
 	private Thread t;
 
@@ -21,6 +22,8 @@ public class FroggerLogs extends Sprite implements Runnable {
 	
 	//link to playerfrog and Cars Label
 	private JLabel playerFrogLabel;
+	
+	
 	
 	//getters/setters
 	public Boolean getMoving() {
@@ -37,6 +40,14 @@ public class FroggerLogs extends Sprite implements Runnable {
 
 	public void setLeft(Boolean left) {
 		this.left = left;
+	}
+
+	public int getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(int speed) {
+		this.speed = speed;
 	}
 
 	public JLabel getFroggerLogsLabel() {
@@ -81,12 +92,14 @@ public class FroggerLogs extends Sprite implements Runnable {
 		super(176, 112, 48, 16, "FroggerLog3.png");
 		this.moving = false;
 		this.left = true;
+		this.speed = FGProperties.OBSTACLE_SPEED_SLOW;
 		//this.character2Label = new JLabel();
 		this.setFroggerLogsLabel(null);
 		this.startButton = null;
 	}
 	
 	public void display() {
+		System.out.println("LOG: ");
 		super.display();
 		System.out.println("moving: " + moving);
 	}
@@ -111,12 +124,6 @@ public class FroggerLogs extends Sprite implements Runnable {
 		//character 2 moving on screen
 		this.moving = true;
 		startButton.setText("STOP");
-		
-		//make graphic for character2 original (could have been swapped with red version)
-		this.setSpriteImage("FroggerLog3.png");
-		this.froggerLogsLabel.setIcon(
-				new ImageIcon(getClass().getResource("Sprites/Logs/" + this.getSpriteImage()))
-		);
 		
 		//make graphic for character1 original (could have been swapped with red version)
 		this.playerFrog.setSpriteImage("FroggerUp.png");
@@ -154,10 +161,11 @@ public class FroggerLogs extends Sprite implements Runnable {
 			
 			//update the character2Label on the screen
 			froggerLogsLabel.setLocation(this.spriteX, this.spriteY);
+
 			
 			//pause operations
 			try {
-				Thread.sleep(100);
+				Thread.sleep(speed);
 			} catch(InterruptedException e) {
 				e.printStackTrace();
 			} catch (Exception e) {
@@ -176,7 +184,5 @@ public class FroggerLogs extends Sprite implements Runnable {
 			
 	}
 	
-
-
 		
 }
