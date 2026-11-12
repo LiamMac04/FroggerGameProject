@@ -1,11 +1,8 @@
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 
 public class ScoreBoard extends Sprite {
-	
-	private JButton addButton, subtractButton;
-	
+
 	private JLabel scoreBoardLabel;
 	
 	private int digitValue;
@@ -19,22 +16,6 @@ public class ScoreBoard extends Sprite {
 		//System.out.println("w, h " + this.spriteWidth + ", " + this.spriteHeight);
 		//System.out.println("image: " + this.spriteImage );
 		super.display();
-	}
-
-	public JButton getAddButton() {
-		return addButton;
-	}
-
-	public void setAddButton(JButton addButton) {
-		this.addButton = addButton;
-	}
-
-	public JButton getSubtractButton() {
-		return subtractButton;
-	}
-
-	public void setSubtractButton(JButton subtractButton) {
-		this.subtractButton = subtractButton;
 	}
 
 	public int getDigitValue() {
