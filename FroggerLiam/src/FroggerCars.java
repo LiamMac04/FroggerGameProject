@@ -26,7 +26,16 @@ public class FroggerCars extends Sprite implements Runnable {
 	private int speed;
 	private int spacing;
 	
+	private boolean gotHit = false;
 	
+	public boolean isGotHit() {
+		return gotHit;
+	}
+
+	public void setGotHit(boolean gotHit) {
+		this.gotHit = gotHit;
+	}
+
 	//getters/setters
 	public Boolean getMoving() {
 		return moving;
@@ -140,6 +149,8 @@ public class FroggerCars extends Sprite implements Runnable {
 		this.moving = true;
 		startButton.setText("STOP");
 		
+		this.gotHit = false;
+		
 		//make graphic for character1 original (could have been swapped with red version)
 		this.playerFrog.setSpriteImage("FroggerUp.png");
 		this.playerFrogLabel.setIcon(
@@ -209,8 +220,17 @@ public class FroggerCars extends Sprite implements Runnable {
 		if ( this.r.intersects( this.playerFrog.getRectangle() ) ) {
 			System.out.println("Game Over");
 			
+			playerFrog.setScore(playerFrog.getScore() - 50);
+			if (playerFrog.getScore() < 0){
+				playerFrog.setScore(0);	
+			}
+			
+			System.out.println(playerFrog.getScore());
+			
+			this.gotHit = true;
 			
 			playerFrog.setFrogActive(false);
+			
 			
 			
 			//make graphic for frog dead

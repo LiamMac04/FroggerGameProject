@@ -17,6 +17,7 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 	    private FroggerCars froggerCars[][];
 	    private FroggerLogs froggerLogs[][];
 	    
+	    
 	    private Sprite fBackground;
 	    
 		
@@ -35,6 +36,22 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 		private int logStartPosition[][];
 		
 		private int carsInRow[];
+		
+		private Text score[];
+		private JLabel scoreLabel[];
+		private ImageIcon scoreImage[];
+		
+		private Text playerName[];
+		private JLabel playerNameLabel[];
+		private ImageIcon playerNameImage[];
+		
+		private String fullScore;
+		
+		private String fullName = "";
+		
+		private boolean nameEntered;
+		
+		private JButton nameButton;
 		
 		
 		
@@ -57,6 +74,54 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 			carStartPosition = new int[5][5];
 			logStartPosition = new int[5][5];
 			carsInRow = new int[5];
+			
+			score = new Text[6];
+			scoreLabel = new JLabel[6];
+			scoreImage = new ImageIcon[6];
+			
+			for (int i = 0; i < 6; i++) {
+				
+				score[i] = new Text();
+				
+				score[i].setSpriteX(168 + (8 * i));
+				score[i].setSpriteY(4);
+				score[i].setSpriteWidth(8);
+				score[i].setSpriteHeight(8);
+				score[i].setSpriteImage("FroggerRedText0.png");
+				
+				scoreLabel[i] = new JLabel();
+				scoreImage[i] = new ImageIcon(getClass().getResource("Sprites/UIElements/RedText/" + score[i].getSpriteImage()));
+				scoreLabel[i].setIcon(scoreImage[i]);
+				scoreLabel[i].setSize(score[i].getSpriteWidth(), score[i].getSpriteHeight());
+				scoreLabel[i].setLocation(score[i].getSpriteX(), score[i].getSpriteY());
+				
+				score[i].setTextLabel(scoreLabel[i]);
+				
+			}
+			
+			playerName = new Text[11];
+			playerNameLabel = new JLabel[11];
+			playerNameImage = new ImageIcon[11];
+			
+			for (int i = 0; i < 11; i++) {
+				playerName[i] = new Text();
+				
+				playerName[i].setSpriteX(36 + (8 * i));
+				playerName[i].setSpriteY(4);
+				playerName[i].setSpriteWidth(8);
+				playerName[i].setSpriteHeight(8);
+				playerName[i].setSpriteImage("FroggerRedText_Underscore.png");
+				
+				playerNameLabel[i] = new JLabel();
+				playerNameImage[i] = new ImageIcon(getClass().getResource("Sprites/UIElements/RedText/" + playerName[i].getSpriteImage()));
+				playerNameLabel[i].setIcon(playerNameImage[i]);
+				playerNameLabel[i].setSize(playerName[i].getSpriteWidth(), playerName[i].getSpriteHeight());
+				playerNameLabel[i].setLocation(playerName[i].getSpriteX(), playerName[i].getSpriteY());
+				
+				playerName[i].setTextLabel(playerNameLabel[i]);
+				
+			}
+			
 			
 			for (int i = 0; i < 5; i++) {
 				if (i == 0) {
@@ -244,6 +309,14 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 			//add actionListeners to the button
 			startButton.addActionListener(this);
 			
+			nameButton = new JButton("ENTER NAME");
+			nameButton.setSize(96, 16);
+			nameButton.setLocation(72, 272);
+			nameButton.setFocusable(false);
+			
+			//add actionListeners to the button
+			nameButton.addActionListener(this);
+			
 			for (int i = 0; i < 5; i++) {
 				for (int j = 0; j < carsInRow[i]; j++ ) {
 					froggerCars[i][j].setStartButton(startButton);
@@ -268,7 +341,19 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 				}
 			}
 			
+			for (int i = 0; i < 6; i++) {
+				content.add(scoreLabel[i]);
+			}
+			
+			for (int i = 0; i < 11; i++) {
+				content.add(playerNameLabel[i]);
+			}
+			
+			
+			
+			
 			content.add(startButton);
+			content.add(nameButton);
 			content.add(fBLabel);
 			
 			
@@ -292,11 +377,55 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 		@Override
 		public void keyReleased(KeyEvent e) {}
 		
+		int nameCount = 0;
+		
 		@Override
 		public void keyPressed(KeyEvent e) {
 			//System.out.println("Key Pressed");
+			if (!nameEntered) {
+				
+				boolean validText = false;
+				
+				if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+					fullName = "";
+					nameCount = 0;
+					
+					for (int i = 0; i < 11; i++) {
+						playerName[i].setDigitValue("_UnderScore");
+					}	
+				} else if (nameCount == 11 && !(e.getKeyCode() == KeyEvent.VK_BACK_SPACE)) {
+					
+				} else if (e.getKeyCode() == KeyEvent.VK_SPACE && !(nameCount == 11)) {
+					fullName = fullName + e.getKeyChar();
+					playerName[nameCount].setDigitValue("_UnderScore");
+					nameCount = nameCount + 1;
+				} else {
+					
+					for (int i = 48; i < 91; i++) {
+						if (e.getKeyCode() == i) {
+							validText = true;
+							System.out.println(e.getKeyCode());
+							break;
+						} else {
+							validText = false;
+						}
+						
+						if (i == 57) {
+							i = i + 7;
+						}
+					}
+					
+					if (validText == true) {
+						fullName = fullName + e.getKeyChar();
+						playerName[nameCount].setDigitValue("" + e.getKeyChar());
+						nameCount = nameCount + 1;
+					}
+					
+				}
+					
+			}
 			
-			if (playerFrog.isFrogActive()) {
+			if (playerFrog.isFrogActive() && (nameEntered == true)) {
 				//get the current position
 				int x = playerFrog.getSpriteX();
 				int y = playerFrog.getSpriteY();
@@ -314,6 +443,8 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 					y -= FGProperties.CHARACTER_STEP;
 					playerFrog.setSpriteImage("FroggerUp.png"); 
 				 */
+				playerFrog.setScore(playerFrog.getScore() + 1);
+				this.scoreChange(playerFrog.getScore());
 				
 				switch( e.getKeyCode() ) {
 				case KeyEvent.VK_UP:
@@ -368,7 +499,7 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 						Boolean onLog = false;
 						
 						for (int i = 0; i < 5; i++) {
-							// have to redo the Log detection. see if you can put a for inside a if like if
+							
 							for (int j = 0; j < 3; j++) {
 								if (froggerLogs[i][j].getRectangle().intersects(this.playerFrog.getRectangle())) {
 									onLog = true;
@@ -382,9 +513,19 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 						if (onLog == false) {
 							System.out.println("Game Over");
 						
-						
+							playerFrog.setScore(playerFrog.getScore() - 50);
+							if (playerFrog.getScore() < 0){
+								playerFrog.setScore(0);	
+							}
+							
+							System.out.println(playerFrog.getScore());
+							
+							this.scoreChange(playerFrog.getScore());
+							
 							playerFrog.setFrogActive(false);
 							playerFrog.setOverWater(false);
+							
+							
 							
 							//make graphic for frog dead
 							this.playerFrog.setSpriteImage("FroggerLose.png");
@@ -428,6 +569,15 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 						
 						if (onLog == false) {
 							System.out.println("Game Over");
+							
+							playerFrog.setScore(playerFrog.getScore() - 50);
+							if (playerFrog.getScore() < 0){
+								playerFrog.setScore(0);	
+							}
+							
+							System.out.println(playerFrog.getScore());
+							
+							this.scoreChange(playerFrog.getScore());
 						
 						
 							playerFrog.setFrogActive(false);
@@ -440,18 +590,46 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 							);
 						}
 					}
+					
 				}
 				
+				if (y <= 42) {
+					System.out.println("You Win");
+					
+					playerFrog.setScore(playerFrog.getScore() + 50);
+					
+					this.scoreChange(playerFrog.getScore());
+					
+					playerFrog.setFrogActive(false);
+					
+					this.playerFrog.setSpriteImage("FroggerInverted.png");
+					this.playerFrogLabel.setIcon(
+							new ImageIcon(getClass().getResource("Sprites/FrogSprites/" + playerFrog.getSpriteImage()))
+					);
+					
+					System.out.println(playerFrog.getScore());
+				
+				}
+				
+				for (int i = 0; i < 5; i++) {
+					for (int j = 0; j < carsInRow[i]; j++ ) {
+						if (froggerCars[i][j].isGotHit()) {
+							this.scoreChange(playerFrog.getScore());
+						}
+					}
+					
+				}
 				
 			}
-			
-			
+				
 		}
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			
-			if (e.getSource() == startButton) {
+			if (e.getSource() == startButton && nameEntered == true) {
+				
+				this.scoreChange(playerFrog.getScore());
 				
 				if ( !playerFrog.isFrogActive()) {
 					
@@ -494,8 +672,36 @@ public class FroggerGame extends JFrame implements KeyListener, ActionListener {
 					startButton.setText("RESTART");
 				}
 				
+			} else if (e.getSource() == nameButton) {
+				nameEntered = true;
+				
+				System.out.println(fullName);
+				
+				content.remove(nameButton);
 			} else {
 				System.out.println("Unknown command");
+			}
+			
+		}
+		
+		public void scoreChange(int scoreInt) {
+			
+			fullScore = "" + scoreInt;
+			int usedDigits = fullScore.length();
+			fullScore = "";
+			
+			for (int i = 0; i < (6 - usedDigits); i++) {
+				fullScore = fullScore + "0";
+			}
+			fullScore = fullScore + scoreInt;
+			
+			System.out.println(fullScore);
+			
+			for (int i = 0; i < 6; i++) {
+				fullScore.substring(i, i + 1);
+				String thisDigit = (fullScore.substring(i, i + 1));
+
+				score[i].setDigitValue(thisDigit);
 			}
 			
 		}
